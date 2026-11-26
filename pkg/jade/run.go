@@ -8,8 +8,9 @@ func Run(opts ...Option) error {
 
 	setupEbitengine()
 	return ebiten.RunGame(&shell{
-		drawer:  o.drawer,
-		updater: o.updater,
+		drawer:   o.drawer,
+		updater:  o.updater,
+		layouter: o.layouter,
 	})
 }
 

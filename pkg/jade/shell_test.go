@@ -48,3 +48,15 @@ func TestShellDraw(t *testing.T) {
 	s.Draw(target)
 	assert.Same(t, target, got)
 }
+
+func TestShellLayout(t *testing.T) {
+	var gotW, gotH int
+	s := shell{layouter: LayoutFunc(func(w, h int) (int, int) {
+		gotW, gotH = w, h
+		return 320, 180
+	})}
+
+	w, h := s.Layout(1280, 720)
+	assert.Equal(t, []int{1280, 720}, []int{gotW, gotH}, "window size passed in")
+	assert.Equal(t, []int{320, 180}, []int{w, h}, "layouter's size returned")
+}

@@ -10,9 +10,10 @@ import (
 const maxDelta = time.Second
 
 type shell struct {
-	last    time.Time
-	drawer  Drawer
-	updater Updater
+	last     time.Time
+	drawer   Drawer
+	updater  Updater
+	layouter Layouter
 }
 
 func (s *shell) Update() error {
@@ -24,7 +25,7 @@ func (s *shell) Draw(screen *ebiten.Image) {
 }
 
 func (s *shell) Layout(outsideWidth, outsideHeight int) (int, int) {
-	return outsideWidth, outsideHeight
+	return s.layouter.Layout(outsideWidth, outsideHeight)
 }
 
 // dt returns the time since the previous call, capped at maxDelta. It returns 0 on the first call.

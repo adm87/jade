@@ -7,8 +7,9 @@ import (
 )
 
 type options struct {
-	drawer  Drawer
-	updater Updater
+	drawer   Drawer
+	updater  Updater
+	layouter Layouter
 }
 
 // Option configures Run.
@@ -34,10 +35,25 @@ func WithUpdater(u Updater) Option {
 	}
 }
 
+// WithLayouter sets the Layouter that decides the game's screen size from the window size.
+// A nil Layouter is ignored.
+func WithLayouter(l Layouter) Option {
+	return func(o *options) {
+		if l != nil {
+			o.layouter = l
+		}
+	}
+}
+
 func defaultOptions() *options {
 	return &options{
-		drawer:  DrawFunc(func(_ *ebiten.Image) {}),
-		updater: UpdateFunc(func(_ time.Duration) error { return nil }),
+		drawer: DrawFunc(func(_ *ebiten.Image) {}),
+		updater: UpdateFunc(func(_ time.Duration) error {
+			return nil
+		}),
+		layouter: LayoutFunc(func(outsideWidth, outsideHeight int) (int, int) {
+			return outsideWidth, outsideHeight
+		}),
 	}
 }
 
