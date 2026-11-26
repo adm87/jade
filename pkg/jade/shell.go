@@ -2,16 +2,18 @@ package jade
 
 import "github.com/hajimehoshi/ebiten/v2"
 
-type shell struct{}
+type shell struct {
+	drawer Drawer
+}
 
-func (s shell) Update() error {
+func (s *shell) Update() error {
 	return nil
 }
 
-func (s shell) Draw(_ *ebiten.Image) {
-
+func (s *shell) Draw(screen *ebiten.Image) {
+	s.drawer.Draw(screen)
 }
 
-func (s shell) Layout(outsideWidth, outsideHeight int) (int, int) {
+func (s *shell) Layout(outsideWidth, outsideHeight int) (int, int) {
 	return outsideWidth, outsideHeight
 }
