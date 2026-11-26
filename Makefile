@@ -1,0 +1,13 @@
+.PHONY: lint align fmt
+
+## Check only (CI-safe)
+lint:
+	betteralign ./...
+	golangci-lint run ./...
+
+## Apply fixes
+align:
+	betteralign -apply ./...
+
+fmt:
+	golangci-lint fmt ./...

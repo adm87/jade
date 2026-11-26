@@ -1,0 +1,25 @@
+version: "2"
+
+linters:
+  enable:
+    - errorlint      # errors.Is/As, %w wrapping
+    - exhaustive     # switch over enums
+    - gocritic
+    - gosec
+    - misspell
+    - nilerr
+    - revive         # naming, doc comments, stutter
+    - unparam
+  settings:
+    exhaustive:
+      default-signifies-exhaustive: true
+  exclusions:
+    rules:
+      # Package comments are optional.
+      - linters: [revive]
+        text: package-comments
+
+formatters:
+  enable:
+    - gofmt
+    - goimports
