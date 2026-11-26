@@ -6,7 +6,14 @@ import "github.com/hajimehoshi/ebiten/v2"
 func Run(opts ...Option) error {
 	o := applyOptions(opts)
 
+	setupEbitengine()
 	return ebiten.RunGame(&shell{
-		drawer: o.drawer,
+		drawer:  o.drawer,
+		updater: o.updater,
 	})
+}
+
+func setupEbitengine() {
+	ebiten.SetTPS(ebiten.SyncWithFPS)
+	// TODO: Set the window size, title, etc.
 }

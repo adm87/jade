@@ -1,9 +1,14 @@
 package jade
 
-import "github.com/hajimehoshi/ebiten/v2"
+import (
+	"time"
+
+	"github.com/hajimehoshi/ebiten/v2"
+)
 
 type options struct {
-	drawer Drawer
+	drawer  Drawer
+	updater Updater
 }
 
 // Option configures Run.
@@ -19,9 +24,20 @@ func WithDrawer(d Drawer) Option {
 	}
 }
 
+// WithUpdater sets the Updater called each tick.
+// A nil Updater is ignored.
+func WithUpdater(u Updater) Option {
+	return func(o *options) {
+		if u != nil {
+			o.updater = u
+		}
+	}
+}
+
 func defaultOptions() *options {
 	return &options{
-		drawer: DrawFunc(func(_ *ebiten.Image) {}),
+		drawer:  DrawFunc(func(_ *ebiten.Image) {}),
+		updater: UpdateFunc(func(_ time.Duration) error { return nil }),
 	}
 }
 

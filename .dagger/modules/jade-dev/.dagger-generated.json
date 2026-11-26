@@ -1,0 +1,9 @@
+{
+  "version": 1,
+  "files": {
+    "cmd/jade-dev-dispatch/main.go": "e3052d393e22e0eb124ae7379f67784bd8399fcff15cd16b8fbb64d4a158e31a",
+    "dagger.gen.go": "69b867a70a00301f952c320af402ce4ae6599a0c3384a336b8287cfab95dcf35",
+    "internal/dagger/dagger.gen.go": "c5c37bff47e076929acd1d420db61a264cf2a9bc0d0f19d186d9ca00789ea385",
+    "internal/dagger/entrypoint/main.dang": "16a7ee6b7879a2d4a55e4afe7b4b0e78e35608c51c018e6cb107b081e08bb9b0"
+  }
+}

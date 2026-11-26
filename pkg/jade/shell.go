@@ -1,13 +1,22 @@
 package jade
 
-import "github.com/hajimehoshi/ebiten/v2"
+import (
+	"time"
+
+	"github.com/hajimehoshi/ebiten/v2"
+)
+
+// maxDelta caps dt so a long pause doesn't produce one huge step.
+const maxDelta = time.Second
 
 type shell struct {
-	drawer Drawer
+	last    time.Time
+	drawer  Drawer
+	updater Updater
 }
 
 func (s *shell) Update() error {
-	return nil
+	return s.updater.Update(s.dt())
 }
 
 func (s *shell) Draw(screen *ebiten.Image) {
@@ -16,4 +25,17 @@ func (s *shell) Draw(screen *ebiten.Image) {
 
 func (s *shell) Layout(outsideWidth, outsideHeight int) (int, int) {
 	return outsideWidth, outsideHeight
+}
+
+// dt returns the time since the previous call, capped at maxDelta. It returns 0 on the first call.
+func (s *shell) dt() time.Duration {
+	now := time.Now()
+	last := s.last
+	s.last = now
+
+	if last.IsZero() {
+		return 0
+	}
+
+	return min(now.Sub(last), maxDelta)
 }

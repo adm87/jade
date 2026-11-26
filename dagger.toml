@@ -1,0 +1,12 @@
+[modules.go-sdk]
+source = "dagger.io/sdk/go"
+
+[sdks.go]
+module = "go-sdk"
+
+[modules.jade-dev]
+source = ".dagger/modules/jade-dev"
+
+[sdks.go.scopes.".dagger/modules/jade-dev"]
+is-module = true
+name = "jade-dev"
