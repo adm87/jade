@@ -50,13 +50,16 @@ func TestShellDraw(t *testing.T) {
 }
 
 func TestShellLayout(t *testing.T) {
-	var gotW, gotH int
-	s := shell{layouter: LayoutFunc(func(w, h int) (int, int) {
+	var gotW, gotH float64
+	s := shell{layouter: LayoutFunc(func(w, h float64) (float64, float64) {
 		gotW, gotH = w, h
-		return 320, 180
+		return 320.5, 180.5
 	})}
 
-	w, h := s.Layout(1280, 720)
-	assert.Equal(t, []int{1280, 720}, []int{gotW, gotH}, "window size passed in")
-	assert.Equal(t, []int{320, 180}, []int{w, h}, "layouter's size returned")
+	w, h := s.LayoutF(1280, 720)
+	assert.Equal(t, []float64{1280, 720}, []float64{gotW, gotH}, "window size passed in")
+	assert.Equal(t, []float64{320.5, 180.5}, []float64{w, h}, "layouter's size returned")
+
+	iw, ih := s.Layout(1280, 720)
+	assert.Equal(t, []int{320, 180}, []int{iw, ih}, "Layout truncates LayoutF")
 }

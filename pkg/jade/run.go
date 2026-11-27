@@ -16,5 +16,6 @@ func Run(opts ...Option) error {
 
 func setupEbitengine() {
 	ebiten.SetTPS(ebiten.SyncWithFPS)
+	ebiten.SetWindowResizingMode(ebiten.WindowResizingModeEnabled)
 	// TODO: Set the window size, title, etc.
 }

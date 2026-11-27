@@ -24,7 +24,13 @@ func (s *shell) Draw(screen *ebiten.Image) {
 	s.drawer.Draw(screen)
 }
 
+// Layout is required by ebiten.Game, but Ebitengine calls LayoutF instead when it exists.
 func (s *shell) Layout(outsideWidth, outsideHeight int) (int, int) {
+	w, h := s.LayoutF(float64(outsideWidth), float64(outsideHeight))
+	return int(w), int(h)
+}
+
+func (s *shell) LayoutF(outsideWidth, outsideHeight float64) (float64, float64) {
 	return s.layouter.Layout(outsideWidth, outsideHeight)
 }
 

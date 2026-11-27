@@ -18,7 +18,7 @@ func (*fakeUpdater) Update(time.Duration) error { return nil }
 
 type fakeLayouter struct{}
 
-func (*fakeLayouter) Layout(w, h int) (int, int) { return w, h }
+func (*fakeLayouter) Layout(w, h float64) (float64, float64) { return w, h }
 
 func TestApplyOptions(t *testing.T) {
 	d, u, l := &fakeDrawer{}, &fakeUpdater{}, &fakeLayouter{}
@@ -31,8 +31,8 @@ func TestApplyOptions(t *testing.T) {
 
 	t.Run("default layout matches the window", func(t *testing.T) {
 		w, h := applyOptions(nil).layouter.Layout(640, 360)
-		assert.Equal(t, 640, w)
-		assert.Equal(t, 360, h)
+		assert.Equal(t, 640.0, w)
+		assert.Equal(t, 360.0, h)
 	})
 
 	t.Run("sets drawer, updater and layouter", func(t *testing.T) {

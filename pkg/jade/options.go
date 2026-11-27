@@ -51,7 +51,7 @@ func defaultOptions() *options {
 		updater: UpdateFunc(func(_ time.Duration) error {
 			return nil
 		}),
-		layouter: LayoutFunc(func(outsideWidth, outsideHeight int) (int, int) {
+		layouter: LayoutFunc(func(outsideWidth, outsideHeight float64) (float64, float64) {
 			return outsideWidth, outsideHeight
 		}),
 	}
