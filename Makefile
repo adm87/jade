@@ -1,7 +1,11 @@
-.PHONY: lint align fmt test test-integration check check-integration
+.PHONY: lint align fmt test bench test-integration check check-integration
 
 test:
 	go test ./...
+
+## Benchmarks only, no tests
+bench:
+	go test -run '^$$' -bench . -benchmem ./...
 
 ## Opens a window; needs a display
 test-integration:

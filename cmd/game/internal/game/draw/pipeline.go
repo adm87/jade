@@ -14,11 +14,11 @@ import (
 
 // Pipeline returns the game's drawer.
 func Pipeline(d *display.Display) jade.Drawer {
-	return display.Buffer(d, ebiten.FilterNearest)(
+	return display.Buffer(d, ebiten.FilterLinear)(
 		jade.DrawAll(
 			world(),
 			corners(d),
-			fps(d),
+			debug(d),
 		),
 	)
 }
@@ -47,7 +47,7 @@ func corners(d *display.Display) jade.Drawer {
 	})
 }
 
-func fps(d *display.Display) jade.Drawer {
+func debug(d *display.Display) jade.Drawer {
 	return jade.DrawFunc(func(dst *ebiten.Image) {
 		minX, minY := d.Visible().Min()
 		ebitenutil.DebugPrintAt(dst, fmt.Sprintf("FPS: %0.2f", ebiten.ActualTPS()), int(minX), int(minY))
