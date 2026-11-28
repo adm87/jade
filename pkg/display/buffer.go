@@ -7,21 +7,15 @@ import (
 	"github.com/adm87/jade/pkg/jade"
 )
 
-// Viewport is a logical size and where it's placed in the window.
-type Viewport interface {
-	Size() geom.Size
-	Bounds() geom.Rectangle
-}
-
-// Buffer returns a pass that draws into an image of the viewport's size, then scales it to the viewport's bounds.
-func Buffer(viewport Viewport, filter ebiten.Filter) jade.DrawPass {
+// Buffer returns a pass that draws into an image of the display's logical size,
+// and then draws that image into the destination with the given filter.
+func Buffer(d *Display, filter ebiten.Filter) jade.DrawPass {
 	return func(next jade.Drawer) jade.Drawer {
 		var buffer *ebiten.Image
 		return jade.DrawFunc(func(dst *ebiten.Image) {
-			w, h := pixels(viewport.Size())
+			w, h := pixels(d.size)
 
-			bounds := viewport.Bounds()
-			if w <= 0 || h <= 0 || bounds.Size.Width <= 0 || bounds.Size.Height <= 0 {
+			if w <= 0 || h <= 0 || d.bounds.Size.Width <= 0 || d.bounds.Size.Height <= 0 {
 				return
 			}
 
@@ -37,8 +31,8 @@ func Buffer(viewport Viewport, filter ebiten.Filter) jade.DrawPass {
 			next.Draw(buffer)
 
 			op := &ebiten.DrawImageOptions{Filter: filter}
-			op.GeoM.Scale(bounds.Size.Width/float64(w), bounds.Size.Height/float64(h))
-			op.GeoM.Translate(bounds.Position.X, bounds.Position.Y)
+			op.GeoM.Scale(d.bounds.Size.Width/float64(w), d.bounds.Size.Height/float64(h))
+			op.GeoM.Translate(d.bounds.Position.X, d.bounds.Position.Y)
 
 			dst.DrawImage(buffer, op)
 		})

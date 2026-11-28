@@ -31,24 +31,22 @@ func New(width, height int, opts ...Option) *Display {
 	}
 }
 
-// Size is the logical size.
-func (d *Display) Size() geom.Size {
-	return d.size
-}
-
-// Scale is the number of physical pixels per logical pixel.
-func (d *Display) Scale() float64 {
-	return d.scale
-}
-
 // Visible is the part of the logical area inside the window, in logical pixels.
 func (d *Display) Visible() geom.Rectangle {
 	return d.visible
 }
 
-// Bounds is the scaled logical area in the window, in physical pixels.
-func (d *Display) Bounds() geom.Rectangle {
-	return d.bounds
+// ToLogical converts screen coordinates in physical pixels to logical coordinates.
+func (d *Display) ToLogical(screenX, screenY float64) (x, y float64) {
+	if d.scale == 0 {
+		return screenX, screenY
+	}
+	return (screenX - d.bounds.Position.X) / d.scale, (screenY - d.bounds.Position.Y) / d.scale
+}
+
+// ToScreen converts logical coordinates to screen coordinates in physical pixels.
+func (d *Display) ToScreen(x, y float64) (screenX, screenY float64) {
+	return x*d.scale + d.bounds.Position.X, y*d.scale + d.bounds.Position.Y
 }
 
 // Layout updates the scale and placement for the window size, and returns that size in physical pixels.

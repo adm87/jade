@@ -130,3 +130,36 @@ func TestDisplayZeroValueFits(t *testing.T) {
 	require.NotNil(t, mode)
 	assert.Equal(t, 2.0, mode(geom.Size{Width: 300, Height: 100}, geom.Size{Width: 100, Height: 50}))
 }
+
+func TestTranslate(t *testing.T) {
+	tests := []struct {
+		name         string
+		window, size geom.Size
+		mode         ScaleMode
+		screen       geom.Point
+		logical      geom.Point
+	}{
+		{"fit letterbox top-left", geom.Size{Width: 1000, Height: 700}, geom.Size{Width: 320, Height: 180}, Fit, geom.Point{X: 0, Y: 68}, geom.Point{X: 0, Y: 0}},
+		{"fit pillarbox center", geom.Size{Width: 800, Height: 360}, geom.Size{Width: 320, Height: 180}, Fit, geom.Point{X: 400, Y: 180}, geom.Point{X: 160, Y: 90}},
+		{"cover cropped edge", geom.Size{Width: 320, Height: 200}, geom.Size{Width: 100, Height: 50}, Cover, geom.Point{X: 0, Y: 0}, geom.Point{X: 10, Y: 0}},
+		{"integer offset", geom.Size{Width: 1000, Height: 700}, geom.Size{Width: 320, Height: 180}, Integer, geom.Point{X: 20, Y: 80}, geom.Point{X: 0, Y: 0}},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			d := &Display{size: tt.size}
+			d.bounds, d.visible, d.scale = layout(tt.window, tt.size, tt.mode)
+
+			x, y := d.ToLogical(tt.screen.X, tt.screen.Y)
+			assert.Equal(t, tt.logical, geom.Point{X: x, Y: y}, "to logical")
+
+			sx, sy := d.ToScreen(tt.logical.X, tt.logical.Y)
+			assert.Equal(t, tt.screen, geom.Point{X: sx, Y: sy}, "to screen")
+		})
+	}
+}
+
+func TestToLogicalZeroValue(t *testing.T) {
+	var d Display
+	x, y := d.ToLogical(5, 7)
+	assert.Equal(t, geom.Point{X: 5, Y: 7}, geom.Point{X: x, Y: y})
+}

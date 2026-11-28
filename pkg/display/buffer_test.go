@@ -11,16 +11,8 @@ import (
 	"github.com/adm87/jade/pkg/jade"
 )
 
-type fakeViewport struct {
-	size   geom.Size
-	bounds geom.Rectangle
-}
-
-func (v *fakeViewport) Size() geom.Size        { return v.size }
-func (v *fakeViewport) Bounds() geom.Rectangle { return v.bounds }
-
 func TestBuffer(t *testing.T) {
-	viewport := &fakeViewport{
+	d := &Display{
 		size:   geom.Size{Width: 32, Height: 18},
 		bounds: rect(0, 0, 64, 36),
 	}
@@ -29,7 +21,7 @@ func TestBuffer(t *testing.T) {
 	next := jade.DrawFunc(func(dst *ebiten.Image) { got = append(got, dst) })
 
 	screen := ebiten.NewImage(64, 36)
-	drawer := Buffer(viewport, ebiten.FilterNearest)(next)
+	drawer := Buffer(d, ebiten.FilterNearest)(next)
 
 	drawer.Draw(screen)
 	require.Len(t, got, 1)
@@ -41,27 +33,27 @@ func TestBuffer(t *testing.T) {
 	require.Len(t, got, 2)
 	assert.Same(t, got[0], got[1], "reuses the image while the size holds")
 
-	viewport.size = geom.Size{Width: 16, Height: 9}
+	d.size = geom.Size{Width: 16, Height: 9}
 	drawer.Draw(screen)
 	require.Len(t, got, 3)
-	assert.Equal(t, 16, got[2].Bounds().Dx(), "resizes with the viewport")
+	assert.Equal(t, 16, got[2].Bounds().Dx(), "resizes with the display")
 	assert.Equal(t, 9, got[2].Bounds().Dy())
 }
 
 func TestBufferSkipsEmpty(t *testing.T) {
 	tests := []struct {
-		name     string
-		viewport *fakeViewport
+		name    string
+		display *Display
 	}{
-		{"zero size", &fakeViewport{bounds: rect(0, 0, 64, 36)}},
-		{"zero bounds", &fakeViewport{size: geom.Size{Width: 32, Height: 18}}},
+		{"zero size", &Display{bounds: rect(0, 0, 64, 36)}},
+		{"zero bounds", &Display{size: geom.Size{Width: 32, Height: 18}}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			called := false
 			next := jade.DrawFunc(func(*ebiten.Image) { called = true })
 
-			Buffer(tt.viewport, ebiten.FilterNearest)(next).Draw(ebiten.NewImage(1, 1))
+			Buffer(tt.display, ebiten.FilterNearest)(next).Draw(ebiten.NewImage(1, 1))
 			assert.False(t, called)
 		})
 	}
